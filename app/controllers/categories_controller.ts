@@ -2,7 +2,7 @@ import { DEFAULT_PER_PAGE } from '#constants/default_per_page'
 import Category from '#models/category'
 import { createCategoryValidator } from '#validators/categories/create_category_validator'
 import { listCategoriesValidator } from '#validators/categories/list_categories_validator'
-import { updateCategoryValidator } from '#validators/categories/udpate_category_validator'
+import { updateCategoryValidator } from '#validators/categories/update_category_validator'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CategoriesController {

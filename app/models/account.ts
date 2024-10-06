@@ -1,8 +1,8 @@
-import { CategoryType } from '#constants/category_type'
+import { AccountType } from '#constants/account_type'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-export default class Category extends BaseModel {
+export default class Account extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
@@ -10,7 +10,7 @@ export default class Category extends BaseModel {
   declare name: string
 
   @column()
-  declare type: CategoryType
+  declare type: AccountType
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
