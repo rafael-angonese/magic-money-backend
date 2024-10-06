@@ -1,0 +1,19 @@
+# Base image
+FROM postgres:14
+
+# Environment variables
+ENV POSTGRES_DB=magic-money
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=root
+
+# Copy initialization scripts
+# COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose PostgreSQL port
+EXPOSE 5432
+
+# Start PostgreSQL service
+CMD ["postgres"]
+
+# docker build -t magic-money-postgresql -f Dockerfile-db .
+# docker run -d --name magic-money-postgresql -p 5432:5432 magic-money-postgresql
