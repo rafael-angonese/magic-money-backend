@@ -8,7 +8,9 @@ export default class AuthController {
 
     const user = await User.verifyCredentials(email, password)
 
-    return User.accessTokens.create(user)
+    const accessToken = await User.accessTokens.create(user)
+
+    return accessToken
   }
 
   async logout({ auth, response }: HttpContext) {
@@ -22,8 +24,6 @@ export default class AuthController {
   async me({ auth }: HttpContext) {
     await auth.check()
 
-    return {
-      data: auth.user,
-    }
+    return auth.user
   }
 }

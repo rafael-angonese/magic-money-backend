@@ -8,6 +8,7 @@
 */
 
 const AuthController = () => import('#controllers/auth_controller')
+const CategoriesController = () => import('#controllers/categories_controller')
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
@@ -24,3 +25,9 @@ router
     router.get('/me', [AuthController, 'me'])
   })
   .prefix('auth')
+
+router
+  .group(() => {
+    router.resource('categories', CategoriesController).apiOnly()
+  })
+  .use(middleware.auth())
