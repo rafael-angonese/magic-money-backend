@@ -12,6 +12,7 @@ const CategoriesController = () => import('#controllers/categories_controller')
 const AccountsController = () => import('#controllers/accounts_controller')
 const UsersController = () => import('#controllers/users_controller')
 const BankAccountsController = () => import('#controllers/bank_accounts_controller')
+const TransactionsController = () => import('#controllers/transactions_controller')
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
@@ -35,5 +36,6 @@ router
     router.resource('accounts', AccountsController).apiOnly()
     router.resource('users', UsersController).apiOnly()
     router.resource('bank-accounts', BankAccountsController).apiOnly()
+    router.resource('transactions', TransactionsController).apiOnly()
   })
   .use(middleware.auth())
