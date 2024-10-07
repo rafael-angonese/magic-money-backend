@@ -25,7 +25,7 @@ export default class UsersController {
   async show({ params }: HttpContext) {
     const user = await User.findOrFail(params.id)
 
-    await user.preload('account')
+    await user.load('account')
 
     return user
   }
