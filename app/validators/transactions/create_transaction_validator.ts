@@ -30,5 +30,14 @@ export const createTransactionValidator = vine.compile(
       })
       .optional()
       .requiredWhen('type', '=', TransactionType.TRANSFER),
+
+    files: vine
+      .array(
+        vine.file({
+          size: '2mb',
+          extnames: ['jpg', 'png', 'pdf'],
+        })
+      )
+      .optional(),
   })
 )
