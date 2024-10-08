@@ -37,5 +37,6 @@ router
     router.resource('users', UsersController).apiOnly()
     router.resource('bank-accounts', BankAccountsController).apiOnly()
     router.resource('transactions', TransactionsController).apiOnly()
+    router.get('transactions/:id/:fileId', [TransactionsController, 'getFile'])
   })
   .use(middleware.auth())
