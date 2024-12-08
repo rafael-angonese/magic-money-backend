@@ -14,15 +14,9 @@ export default class RestoreService {
   public async exec(fileName: string): Promise<void> {
     const filePath = path.resolve(process.cwd(), `storage/backups/${fileName}`)
 
-    try {
-      await this.downloadS3File(fileName)
-      await this.restoreDatabaseDump(filePath)
-      await this.deleteLocalDump(fileName)
-
-      logger.info(`Restore ${fileName} realizado sucesso.`)
-    } catch (error) {
-      logger.error(`Erro ao realizar restore: ${error.message}`)
-    }
+    await this.downloadS3File(fileName)
+    await this.restoreDatabaseDump(filePath)
+    await this.deleteLocalDump(fileName)
   }
 
   private async downloadS3File(fileName: string): Promise<void> {

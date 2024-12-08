@@ -17,15 +17,9 @@ export default class BackupService {
     const fileName = `${timestamp}.sql`
     const filePath = path.resolve(process.cwd(), `storage/backups/${fileName}`)
 
-    try {
-      await this.createDatabaseDump(filePath)
-      await this.uploadToS3(fileName)
-      await this.deleteLocalDump(fileName)
-
-      logger.info(`Backup ${fileName} realizado sucesso.`)
-    } catch (error) {
-      logger.error(`Erro ao realizar backup: ${error.message}`)
-    }
+    await this.createDatabaseDump(filePath)
+    await this.uploadToS3(fileName)
+    await this.deleteLocalDump(fileName)
   }
 
   private async createDatabaseDump(filePath: string): Promise<void> {
@@ -61,7 +55,7 @@ export default class BackupService {
       await drive.use('fs').delete(`/backups/${fileName}`)
       logger.info(`Arquivo local ${fileName} excluído com sucesso.`)
     } catch (error) {
-      logger.error(`Erro ao excluir o arquivo local ${fileName}: ${error.message}`)
+      throw new Error(`Erro ao excluir o arquivo local: ${error.message}`)
     }
   }
 }
