@@ -14,10 +14,13 @@ export default class BankAccountsController {
     return data
   }
 
-  async store({ request }: HttpContext) {
+  async store({ auth, request }: HttpContext) {
     const data = await request.validateUsing(createBankAccountValidator)
 
-    const bankAccount = await BankAccount.create(data)
+    const bankAccount = await BankAccount.create({
+      ...data,
+      accountId: auth.user!.accountId,
+    })
 
     return bankAccount
   }
