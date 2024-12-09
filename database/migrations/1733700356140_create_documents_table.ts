@@ -1,15 +1,17 @@
+import Account from '#models/account'
 import File from '#models/file'
-import Transaction from '#models/transaction'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'transaction_files'
+  protected tableName = 'documents'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('transaction_id').unsigned().references('id').inTable(Transaction.table)
+      table.datetime('date').nullable()
+      table.string('document_type').notNullable()
+      table.integer('account_id').unsigned().references('id').inTable(Account.table)
       table.integer('file_id').unsigned().references('id').inTable(File.table)
 
       table.timestamp('created_at')

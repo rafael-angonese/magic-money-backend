@@ -2,6 +2,7 @@ import { TransactionType } from '#constants/transation_type'
 import Account from '#models/account'
 import BankAccount from '#models/bank_account'
 import Category from '#models/category'
+import Document from '#models/document'
 import vine from '@vinejs/vine'
 
 export const createTransactionValidator = vine.compile(
@@ -12,10 +13,6 @@ export const createTransactionValidator = vine.compile(
     description: vine.string(),
     categoryId: vine.number().exists(async (db, value) => {
       const match = await db.from(Category.table).where('id', value).first()
-      return match
-    }),
-    accountId: vine.number().exists(async (db, value) => {
-      const match = await db.from(Account.table).where('id', value).first()
       return match
     }),
     sourceBankAccountId: vine.number().exists(async (db, value) => {
@@ -30,12 +27,11 @@ export const createTransactionValidator = vine.compile(
       })
       .optional()
       .requiredWhen('type', '=', TransactionType.TRANSFER),
-
-    files: vine
+    documentIds: vine
       .array(
-        vine.file({
-          size: '2mb',
-          extnames: ['jpg', 'png', 'pdf'],
+        vine.number().exists(async (db, value) => {
+          const match = await db.from(Document.table).where('id', value).first()
+          return match
         })
       )
       .optional(),

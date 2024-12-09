@@ -2,8 +2,8 @@ import { TransactionType } from '#constants/transation_type'
 import Account from '#models/account'
 import BankAccount from '#models/bank_account'
 import Category from '#models/category'
-import File from '#models/file'
-import TransactionFile from '#models/transaction_file'
+import Document from '#models/document'
+import TransactionDocument from '#models/transaction_document'
 import User from '#models/user'
 import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
@@ -65,8 +65,8 @@ export default class Transaction extends BaseModel {
   })
   declare destinationBankAccount: BelongsTo<typeof BankAccount>
 
-  @manyToMany(() => File, {
-    pivotTable: TransactionFile.table,
+  @manyToMany(() => Document, {
+    pivotTable: TransactionDocument.table,
   })
-  declare files: ManyToMany<typeof File>
+  declare documents: ManyToMany<typeof Document>
 }

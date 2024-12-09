@@ -1,11 +1,10 @@
 import { DEFAULT_PER_PAGE } from '#constants/default_per_page'
 import File from '#models/file'
 import Transaction from '#models/transaction'
-import TransactionFile from '#models/transaction_file'
+import TransactionDocument from '#models/transaction_document'
 import { createTransactionValidator } from '#validators/transactions/create_transaction_validator'
 import { listTransactionsValidator } from '#validators/transactions/list_transactions_validator'
 import { updateTransactionValidator } from '#validators/transactions/update_transaction_validator'
-import { cuid } from '@adonisjs/core/helpers'
 import { ResponseStatus, type HttpContext } from '@adonisjs/core/http'
 import drive from '@adonisjs/drive/services/main'
 
@@ -18,30 +17,16 @@ export default class TransactionsController {
     return data
   }
 
-  async store({ request }: HttpContext) {
-    const { files, ...data } = await request.validateUsing(createTransactionValidator)
+  async store({ auth, request }: HttpContext) {
+    const { documentIds, ...data } = await request.validateUsing(createTransactionValidator)
 
-    const transaction = await Transaction.create(data)
+    const transaction = await Transaction.create({
+      ...data,
+      accountId: auth.user!.accountId,
+    })
 
-    if (files && files.length > 0) {
-      for (const file of files) {
-        const key = `uploads/${cuid()}.${file.extname}`
-        await file.moveToDisk(key)
-
-        const savedFile = await File.create({
-          path: key,
-          originalName: file.clientName,
-          size: file.size,
-          type: file.type,
-          subtype: file.subtype,
-          extname: file.extname,
-        })
-
-        await TransactionFile.create({
-          transactionId: transaction.id,
-          fileId: savedFile.id,
-        })
-      }
+    if (documentIds) {
+      await transaction.related('documents').sync(documentIds)
     }
 
     return transaction
@@ -53,7 +38,7 @@ export default class TransactionsController {
     await transaction.load('category')
     await transaction.load('sourceBankAccount')
     await transaction.load('destinationBankAccount')
-    await transaction.load('files')
+    await transaction.load('documents', (builder) => builder.preload('file'))
 
     return transaction
   }
@@ -61,12 +46,14 @@ export default class TransactionsController {
   async getFile({ params, response }: HttpContext) {
     const { id, fileId } = params
 
-    const transactionFile = await TransactionFile.query()
+    const transactionFile = await TransactionDocument.query()
       .where('transaction_id', id)
       .where('file_id', fileId)
       .firstOrFail()
 
-    const file = await File.findOrFail(transactionFile.fileId)
+    await transactionFile.load('document', (builder) => builder.preload('file'))
+
+    const file = await File.findOrFail(transactionFile.document.file.id)
 
     const exists = await drive.use().exists(file.path)
 
