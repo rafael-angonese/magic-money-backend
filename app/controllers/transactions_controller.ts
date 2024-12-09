@@ -9,10 +9,12 @@ import { ResponseStatus, type HttpContext } from '@adonisjs/core/http'
 import drive from '@adonisjs/drive/services/main'
 
 export default class TransactionsController {
-  async index({ request }: HttpContext) {
+  async index({ auth, request }: HttpContext) {
     const { page, perPage } = await request.validateUsing(listTransactionsValidator)
 
-    const data = await Transaction.query().paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const data = await Transaction.query()
+      .where('accountId', auth.user!.accountId)
+      .paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }

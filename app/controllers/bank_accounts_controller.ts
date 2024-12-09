@@ -6,10 +6,12 @@ import { updateBankAccountValidator } from '#validators/bank_accounts/update_ban
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class BankAccountsController {
-  async index({ request }: HttpContext) {
+  async index({ auth, request }: HttpContext) {
     const { page, perPage } = await request.validateUsing(listBankAccountsValidator)
 
-    const data = await BankAccount.query().paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const data = await BankAccount.query()
+      .where('accountId', auth.user!.accountId)
+      .paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }
