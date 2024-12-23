@@ -1,5 +1,4 @@
 import { TransactionType } from '#constants/transation_type'
-import Account from '#models/account'
 import BankAccount from '#models/bank_account'
 import Category from '#models/category'
 import Document from '#models/document'

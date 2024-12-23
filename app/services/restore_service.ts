@@ -33,7 +33,7 @@ export default class RestoreService {
     const restoreCommand = `PGPASSWORD=${this.password} psql -h ${this.host} -p ${this.port} -U ${this.user} -d ${this.database} -f ${filePath}`
 
     return new Promise((resolve, reject) => {
-      exec(restoreCommand, (error, stdout, stderr) => {
+      exec(restoreCommand, (error, _, stderr) => {
         if (error) {
           reject(new Error(`Erro ao realizar o restore: ${error.message}`))
           return

@@ -26,7 +26,7 @@ export default class BackupService {
     const dumpCommand = `PGPASSWORD=${this.password} pg_dump -h ${this.host} -p ${this.port} -U ${this.user} ${this.database} > ${filePath}`
 
     return new Promise((resolve, reject) => {
-      exec(dumpCommand, (error, stdout, stderr) => {
+      exec(dumpCommand, (error, _, stderr) => {
         if (error) {
           reject(new Error(`Erro ao realizar o dump: ${error.message}`))
           return
