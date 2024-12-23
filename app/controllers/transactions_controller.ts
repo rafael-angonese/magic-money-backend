@@ -14,6 +14,7 @@ export default class TransactionsController {
 
     const data = await Transaction.query()
       .where('accountId', auth.user!.accountId)
+      .preload('documents')
       .paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
