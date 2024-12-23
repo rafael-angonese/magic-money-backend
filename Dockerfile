@@ -23,7 +23,13 @@ RUN node ace build
 FROM base
 ENV NODE_ENV=production
 WORKDIR /app
+
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/build /app
+COPY startup.sh /startup.sh
+
+RUN chmod +x /startup.sh
+
 EXPOSE $PORT
-CMD ["node", "./bin/server.js"]
+
+CMD ["sh", "startup.sh"]
