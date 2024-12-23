@@ -26,10 +26,10 @@ WORKDIR /app
 
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/build /app
-COPY startup.sh /startup.sh
+COPY ./startup.sh /startup.sh
 
 RUN chmod +x /startup.sh
 
 EXPOSE $PORT
 
-CMD ["sh", "startup.sh"]
+CMD ["sh", "/startup.sh"]
