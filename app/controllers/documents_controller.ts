@@ -9,9 +9,20 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class DocumentsController {
   async index({ request }: HttpContext) {
-    const { page, perPage } = await request.validateUsing(listDocumentsValidator)
+    const { page, perPage, initialDateAt, finalDateAt } =
+      await request.validateUsing(listDocumentsValidator)
 
-    const data = await Document.query().paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const query = Document.query()
+
+    if (initialDateAt) {
+      query.where('date', '>=', initialDateAt)
+    }
+
+    if (finalDateAt) {
+      query.where('date', '<=', finalDateAt)
+    }
+
+    const data = await query.paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }
