@@ -10,12 +10,20 @@ import drive from '@adonisjs/drive/services/main'
 
 export default class TransactionsController {
   async index({ auth, request }: HttpContext) {
-    const { page, perPage } = await request.validateUsing(listTransactionsValidator)
+    const { page, perPage, initialDateAt, finalDateAt } =
+      await request.validateUsing(listTransactionsValidator)
 
-    const data = await Transaction.query()
-      .where('accountId', auth.user!.accountId)
-      .preload('documents')
-      .paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const query = Transaction.query().where('accountId', auth.user!.accountId)
+
+    if (initialDateAt) {
+      query.where('date', '>=', initialDateAt)
+    }
+
+    if (finalDateAt) {
+      query.where('date', '<=', finalDateAt)
+    }
+
+    const data = await query.preload('documents').paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }
