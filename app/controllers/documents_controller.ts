@@ -8,11 +8,11 @@ import { cuid } from '@adonisjs/core/helpers'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class DocumentsController {
-  async index({ request }: HttpContext) {
+  async index({ request, auth }: HttpContext) {
     const { page, perPage, initialDateAt, finalDateAt } =
       await request.validateUsing(listDocumentsValidator)
 
-    const query = Document.query()
+    const query = Document.query().where('accountId', auth.user!.accountId)
 
     if (initialDateAt) {
       query.where('date', '>=', initialDateAt)
