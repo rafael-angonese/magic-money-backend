@@ -8,7 +8,6 @@ export const updateUserValidator = vine.withMetaData<{ userId: number }>().compi
     email: vine
       .string()
       .email()
-      .normalizeEmail()
       .unique(async (db, value, field) => {
         const match = await db
           .from(User.table)
