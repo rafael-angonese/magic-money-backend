@@ -28,7 +28,9 @@ export default class TransactionsController {
       query.where('date', '<=', finalDateAt)
     }
 
-    const data = await query.paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const data = await query
+      .orderBy('date', 'desc')
+      .paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }
