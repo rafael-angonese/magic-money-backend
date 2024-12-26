@@ -13,7 +13,12 @@ export default class TransactionsController {
     const { page, perPage, initialDateAt, finalDateAt } =
       await request.validateUsing(listTransactionsValidator)
 
-    const query = Transaction.query().where('accountId', auth.user!.accountId)
+    const query = Transaction.query()
+      .where('accountId', auth.user!.accountId)
+      .preload('documents')
+      .preload('category')
+      .preload('sourceBankAccount')
+      .preload('destinationBankAccount')
 
     if (initialDateAt) {
       query.where('date', '>=', initialDateAt)
@@ -23,7 +28,7 @@ export default class TransactionsController {
       query.where('date', '<=', finalDateAt)
     }
 
-    const data = await query.preload('documents').paginate(page || 1, perPage || DEFAULT_PER_PAGE)
+    const data = await query.paginate(page || 1, perPage || DEFAULT_PER_PAGE)
 
     return data
   }
